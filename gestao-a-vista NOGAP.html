@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestão à Vista – Entrega 06/11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --font-anthropic-sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-anthropic-serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --color-bg:#f6f7f9;--color-panel:#ffffff;--color-fg:#1c2330;--color-fg-muted:#5d6675;--color-border-line:#dfe3ea;
+  --color-ok:#1f8a4c;--color-warn:#b86e00;--color-bad:#c4352b;--accent:#2f6fb8;
+  --cds-font-size-caption:.8125rem;--cds-font-size-body:.9375rem;--cds-font-size-heading:1.0625rem;--cds-font-size-title:1.875rem;--cds-font-weight-medium:600;
+  --cds-gap-xs:4px;--cds-gap-sm:8px;--cds-gap-md:12px;--cds-gap-lg:20px;--cds-gap-xl:32px;
+  --cds-pad-xs:4px;--cds-pad-sm:8px;--cds-pad-md:12px;--cds-pad-lg:20px;--cds-radius:8px;
+  --cds-chart-muted:#b9c0cb;--cds-surface-popover:#ffffff;--cds-border:#dfe3ea;--cds-shadow-popover:0 6px 20px rgba(20,30,50,.14);--cds-text-secondary:#5d6675;--cds-dur-slow:.3s;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --color-bg:#12161d;--color-panel:#1a2029;--color-fg:#e7ebf1;--color-fg-muted:#9aa4b2;--color-border-line:#2c3440;
+  --color-ok:#4cc27f;--color-warn:#f0a63a;--color-bad:#f0695e;--accent:#6aa5ee;
+  --cds-chart-muted:#4a5462;--cds-surface-popover:#222935;--cds-border:#2c3440;--cds-shadow-popover:0 6px 20px rgba(0,0,0,.45);--cds-text-secondary:#9aa4b2;
+  color-scheme:dark;
+}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--color-bg);color:var(--color-fg);font-family:var(--font-anthropic-sans);font-size:15px;line-height:1.45}
+.wrap{max-width:1280px;margin-inline:auto;padding-block:32px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.rodape{margin-top:32px;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+[hidden]{display:none!important}
+.dash-skeleton{}
+</style>
+</head>
+<body>
+<main class="wrap">
+<style>
+.gv{display:flex;flex-direction:column;gap:var(--cds-gap-xl);font-family:var(--font-anthropic-sans)}
+.gv-head h1{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);margin:0;text-wrap:balance}
+.gv-head p{margin:var(--cds-gap-xs) 0 0;color:var(--color-fg-muted);font-size:var(--cds-font-size-body)}
+.gv .gv-head p b,.gv .gv-head h1 b{font-weight:600;color:var(--color-fg)}
+.gv .gv-head h1 b{font-weight:400}
+.gv-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,9.5rem),1fr));gap:var(--cds-gap-md)}
+.gv-tile{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-md) var(--cds-pad-lg);display:flex;flex-direction:column;gap:var(--cds-gap-xs);min-width:0}
+.gv-tile .lbl{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);text-transform:uppercase;letter-spacing:.05em}
+.gv .gv-tile .num{font-family:var(--font-anthropic-serif);font-size:var(--cds-font-size-title);font-weight:400;font-variant-numeric:tabular-nums;line-height:1.15}
+.gv-tile .sub{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.gv .num.is-warn{color:var(--color-warn)}
+.gv .num.is-ok{color:var(--color-ok)}
+.gv-card{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-lg);min-width:0}
+.gv-card h2{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium);margin:0}
+.gv-card .note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:2px 0 var(--cds-gap-md)}
+.gv-section h2.sec-t{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium);margin:0 0 var(--cds-gap-sm)}
+.gv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:var(--cds-gap-md)}
+.gv-status{display:flex;gap:2px;min-height:28px;border-radius:var(--cds-radius);overflow:hidden}
+.gv-status .seg{min-width:2.25rem;padding:0 6px;display:flex;align-items:center;justify-content:center;min-height:28px;color:var(--color-bg);font-size:var(--cds-font-size-caption);font-weight:600;font-variant-numeric:tabular-nums}
+.gv-legend{display:flex;flex-wrap:wrap;gap:var(--cds-gap-sm) var(--cds-gap-lg);font-size:var(--cds-font-size-body);color:var(--color-fg)}
+.gv-legend b{font-variant-numeric:tabular-nums}
+.gv-sw{display:inline-block;width:.6rem;height:.6rem;border-radius:2px;margin-right:.4rem}
+.gv-statuswrap{display:flex;flex-direction:column;gap:var(--cds-gap-sm);min-height:3.5rem}
+.gv-bars{position:relative;display:flex;flex-direction:column;gap:var(--cds-gap-sm);min-height:6rem}
+.gv-bar{display:grid;grid-template-columns:minmax(0,10rem) minmax(0,1fr) 2rem;align-items:center;gap:var(--cds-gap-sm);font-size:var(--cds-font-size-caption);cursor:default}
+.gv-bar .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gv-bar .tr{display:flex;height:14px;gap:1px}
+.gv-bar .tr span{height:100%;border-radius:2px}
+.gv-bar .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--color-fg-muted)}
+.gv-bar:hover .nm{color:var(--color-fg);text-decoration:underline}
+.gv-tip{position:absolute;z-index:3;pointer-events:none;background:var(--cds-surface-popover);border:1px solid var(--cds-border);border-radius:var(--cds-radius);box-shadow:var(--cds-shadow-popover);padding:var(--cds-pad-xs) var(--cds-pad-sm);font-size:var(--cds-font-size-caption);white-space:nowrap}
+.gv-tip .t{color:var(--cds-text-secondary);margin-bottom:2px}
+.gv-keys{display:flex;gap:var(--cds-gap-lg);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-bottom:var(--cds-gap-md)}
+.gv-tw{overflow:auto;max-height:30rem}
+.gv table{width:100%;border-collapse:collapse;font-size:var(--cds-font-size-caption);font-variant-numeric:tabular-nums}
+.gv th{position:sticky;top:0;background:var(--color-panel);text-align:left;font-weight:var(--cds-font-weight-medium);color:var(--color-fg-muted);padding:6px 8px;border-bottom:1px solid var(--color-border-line);white-space:nowrap;z-index:1}
+.gv td{padding:7px 8px;border-bottom:1px solid var(--color-border-line);vertical-align:top}
+.gv td.tt{min-width:16rem}
+.gv td a{color:inherit}
+.gv-sort{all:unset;cursor:pointer}
+.gv-sort:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
+.gv th[aria-sort=ascending] .gv-sort::after{content:" ↑"}
+.gv th[aria-sort=descending] .gv-sort::after{content:" ↓"}
+.gv-pill{display:inline-block;padding:0 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap;line-height:1.6}
+.gv-pill.ok{color:var(--color-ok)}
+.gv-pill.warn{color:var(--color-warn)}
+.gv-pill.bad{color:var(--color-bad)}
+.gv-search{display:flex;gap:var(--cds-gap-sm);align-items:center;margin-bottom:var(--cds-gap-md)}
+.gv-search input{flex:1;max-width:22rem;font:inherit;font-size:var(--cds-font-size-body);padding:6px 10px;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background:var(--color-bg);color:var(--color-fg)}
+.gv-copy{font:inherit;font-size:var(--cds-font-size-body);padding:6px 12px;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background:var(--color-bg);color:var(--color-fg);cursor:pointer;white-space:nowrap}
+.gv-copy:hover{border-color:var(--color-fg-muted)}
+.gv-copy:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
+.gv-copy .c-ok{color:var(--color-ok)}
+.gv-copy-area{width:100%;min-height:6rem;margin-bottom:var(--cds-gap-md);font:inherit;font-size:var(--cds-font-size-caption);background:var(--color-bg);color:var(--color-fg);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-sm)}
+.gv-fail{display:flex;align-items:center;justify-content:center;gap:.5rem;min-height:inherit;color:var(--color-fg-muted);font-size:var(--cds-font-size-caption)}
+.gv-fail .dot{width:.375rem;height:.375rem;border-radius:50%;background:var(--color-bad)}
+[data-dash-source-state=empty]{color:transparent}
+[data-dash-source-state=refreshing]{opacity:.5;transition:opacity var(--cds-dur-slow)}
+@media (max-width:720px){.gv .sec{display:none}}
+</style>
+
+<div class="gv">
+  <header class="gv-head" id="topo">
+    <h1>Gestão à vista · entrega de <b data-draw="resumo" data-source="resumo" data-field="entrega" data-row="0" class="dash-skeleton">—</b></h1>
+    <p><b data-draw="resumo" data-source="resumo" data-field="resolvidos" data-row="0" class="dash-skeleton">—</b> de <b data-draw="resumo" data-source="resumo" data-field="total" data-row="0" class="dash-skeleton">—</b> itens do pacote estão resolvidos. Ainda faltam <b data-draw="resumo" data-source="resumo" data-field="pendentes" data-row="0" class="dash-skeleton">—</b>, listados em Pendências abaixo. O pacote tem <b data-draw="resumo" data-source="resumo" data-field="bugs" data-row="0" class="dash-skeleton">—</b> bugs (<b data-draw="resumo" data-source="resumo" data-field="bugs_pend" data-row="0" class="dash-skeleton">—</b> pendentes) e <b data-draw="resumo" data-source="resumo" data-field="stories" data-row="0" class="dash-skeleton">—</b> user stories (<b data-draw="resumo" data-source="resumo" data-field="stories_pend" data-row="0" class="dash-skeleton">—</b> pendentes).</p>
+  </header>
+
+  <section class="gv-tiles" aria-label="Indicadores">
+    <div class="gv-tile"><span class="lbl">Itens no pacote</span><span class="num dash-skeleton" data-draw="resumo" data-source="resumo" data-field="total" data-row="0">—</span><span class="sub">Bugs e user stories</span></div>
+    <div class="gv-tile"><span class="lbl">Resolvidos</span><span class="num dash-skeleton" data-draw="resumo" data-source="resumo" data-field="resolvidos" data-row="0">—</span><span class="sub">Estado Resolved</span></div>
+    <div class="gv-tile"><span class="lbl">Pendentes</span><span class="num dash-skeleton" data-draw="resumo" data-source="resumo" data-field="pendentes" data-row="0">—</span><span class="sub">Em teste ou em desenvolvimento</span></div>
+    <div class="gv-tile"><span class="lbl">Pronto</span><span class="num dash-skeleton" data-draw="resumo" data-source="resumo" data-field="pct" data-row="0">—</span><span class="sub">Resolvidos ÷ total</span></div>
+    <div class="gv-tile"><span class="lbl">Bugs</span><span class="num dash-skeleton" data-draw="resumo" data-source="resumo" data-field="bugs" data-row="0">—</span><span class="sub"><span data-draw="resumo" data-source="resumo" data-field="bugs_res" data-row="0">—</span> resolvidos · <span data-draw="resumo" data-source="resumo" data-field="bugs_pend" data-row="0">—</span> pendentes</span><span class="sub">Suporte <span data-draw="resumo" data-source="resumo" data-field="bugs_suporte" data-row="0">—</span> · Produto <span data-draw="resumo" data-source="resumo" data-field="bugs_produto" data-row="0">—</span></span></div>
+    <div class="gv-tile"><span class="lbl">User Stories</span><span class="num dash-skeleton" data-draw="resumo" data-source="resumo" data-field="stories" data-row="0">—</span><span class="sub"><span data-draw="resumo" data-source="resumo" data-field="stories_res" data-row="0">—</span> resolvidas · <span data-draw="resumo" data-source="resumo" data-field="stories_pend" data-row="0">—</span> pendentes</span><span class="sub">Suporte <span data-draw="resumo" data-source="resumo" data-field="stories_suporte" data-row="0">—</span> · Produto <span data-draw="resumo" data-source="resumo" data-field="stories_produto" data-row="0">—</span></span></div>
+    <div class="gv-tile"><span class="lbl">Lead time médio</span><span class="num dash-skeleton" data-draw="resumo" data-source="resumo" data-field="lead" data-row="0">—</span><span class="sub">Dias da criação à resolução</span></div>
+  </section>
+
+  <section class="gv-card" id="status">
+    <h2>Status do pacote</h2>
+    <p class="note">Quantidade de itens em cada estado do Azure DevOps.</p>
+    <div class="gv-statuswrap dash-skeleton" data-draw="status" data-source="por_estado"></div>
+  </section>
+
+  <section class="gv-card" id="pendencias">
+    <h2>Pendências</h2>
+    <p class="note">Itens que ainda não estão em Resolved. São o risco para a entrega.</p>
+    <div class="gv-tw">
+      <table data-source="entrega" data-row-key="id">
+        <thead><tr>
+          <th data-field="id">ID</th>
+          <th data-field="tipo">Tipo</th>
+          <th data-field="estado">Estado</th>
+          <th data-field="titulo">Título</th>
+          <th data-field="atribuido">Assigned To</th>
+          <th data-field="cliente">Cliente</th>
+          <th data-field="dev">Dev responsável</th>
+          <th data-field="tester" class="sec">Tester</th>
+          <th data-field="po" class="sec">PO</th>
+        </tr></thead>
+        <tbody data-draw="pend"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="gv-section" id="distribuicao">
+    <h2 class="sec-t">Distribuição do pacote</h2>
+    <div class="gv-keys"><span><span class="gv-sw" data-draw="sw-res"></span>Resolvidos</span><span><span class="gv-sw" style="background:var(--color-warn)"></span>Pendentes</span></div>
+    <div class="gv-grid">
+      <div class="gv-card" id="por-departamento"><h2>Por departamento de abertura</h2><p class="note">Quem abriu o item: Suporte ou Produto.</p><div class="gv-bars dash-skeleton" data-draw="barras" data-source="por_departamento"></div></div>
+      <div class="gv-card" id="por-assigned"><h2>Por Assigned To</h2><p class="note">Com quem cada item está atribuído agora.</p><div class="gv-bars dash-skeleton" data-draw="barras" data-source="por_atribuido"></div></div>
+      <div class="gv-card" id="por-cliente"><h2>Por cliente</h2><p class="note">Itens por cliente solicitante.</p><div class="gv-bars dash-skeleton" data-draw="barras" data-source="por_cliente"></div></div>
+      <div class="gv-card" id="por-dev"><h2>Por dev responsável</h2><p class="note">Carga de cada desenvolvedor no pacote.</p><div class="gv-bars dash-skeleton" data-draw="barras" data-source="por_dev"></div></div>
+      <div class="gv-card" id="por-tester"><h2>Por tester</h2><p class="note">Itens a validar por cada tester.</p><div class="gv-bars dash-skeleton" data-draw="barras" data-source="por_tester"></div></div>
+      <div class="gv-card" id="por-modulo"><h2>Por módulo</h2><p class="note">Onde as alterações caem no sistema.</p><div class="gv-bars dash-skeleton" data-draw="barras" data-source="por_modulo"></div></div>
+      <div class="gv-card" id="por-po"><h2>Por PO responsável</h2><p class="note">Itens sob cada product owner.</p><div class="gv-bars dash-skeleton" data-draw="barras" data-source="por_po"></div></div>
+      <div class="gv-card" id="por-criticidade"><h2>Por criticidade</h2><p class="note">Nível de criticidade informado no item.</p><div class="gv-bars dash-skeleton" data-draw="barras" data-source="por_criticidade"></div></div>
+    </div>
+  </section>
+
+  <section class="gv-card" id="itens">
+    <h2>Todos os itens</h2>
+    <p class="note">Clique no ID para abrir o item no Azure DevOps. Clique no cabeçalho para ordenar.</p>
+    <div class="gv-search"><input id="gv-busca" type="search" placeholder="Buscar por título, cliente, dev, módulo…" aria-label="Buscar itens"><button type="button" class="gv-copy" id="gv-copiar"><span class="c-idle">Copiar tabela</span><span class="c-ok" hidden>Copiado</span><span class="c-fail" hidden>Selecionado, use Ctrl+C</span></button></div>
+    <textarea id="gv-copia-area" class="gv-copy-area" aria-label="Itens para copiar" readonly hidden></textarea>
+    <div class="gv-tw">
+      <table data-source="entrega" data-row-key="id">
+        <thead><tr>
+          <th data-field="id"><button class="gv-sort" data-k="id">ID</button></th>
+          <th data-field="tipo"><button class="gv-sort" data-k="tipo">Tipo</button></th>
+          <th data-field="estado"><button class="gv-sort" data-k="estado">Estado</button></th>
+          <th data-field="titulo"><button class="gv-sort" data-k="titulo">Título</button></th>
+          <th data-field="cliente"><button class="gv-sort" data-k="cliente">Cliente</button></th>
+          <th data-field="modulo" class="sec"><button class="gv-sort" data-k="modulo">Módulo</button></th>
+          <th data-field="dev"><button class="gv-sort" data-k="dev">Dev</button></th>
+          <th data-field="tester" class="sec"><button class="gv-sort" data-k="tester">Tester</button></th>
+          <th data-field="criticidade" class="sec"><button class="gv-sort" data-k="criticidade">Criticidade</button></th>
+          <th data-field="departamento" class="sec"><button class="gv-sort" data-k="departamento">Origem</button></th>
+          <th data-field="resolvido" class="sec"><button class="gv-sort" data-k="resolvido">Resolvido em</button></th>
+        </tr></thead>
+        <tbody data-draw="tabela"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script id="dados" type="application/json">[{"id": 54895, "tipo": "Bug", "estado": "Resolved", "titulo": "Bug - E-social - Configurador do E-social.", "po": "Antonio França", "cliente": "Bayer", "modulo": "eSocial", "dev": "Julius Caesar Santos Silva", "tester": "Pedro Henrique Santos Mendonça", "data_entrega": "2026-11-06", "departamento": "Suporte", "iteracao": "Sustentação - 293", "criado": "2026-09-21", "resolvido": "2026-11-04", "ativado": "2026-11-04", "criticidade": "3 - Médio", "classificacao": "Bug", "tipo_cliente": "Enterprise", "horas": 7.0, "atribuido": "Robson Roberto Fonseca"}, {"id": 55509, "tipo": "Bug", "estado": "Resolved", "titulo": "[POSIÇÃO] Lentidão ao buscar funcionários para alocação manual", "po": "Vinicius Gimenes de Oliveira", "cliente": "Bracell", "modulo": "Work Área", "dev": "Rafael Wandenkolk", "tester": "Eduardo Castro", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Sustentação - 293", "criado": "2026-10-06", "resolvido": "2026-10-26", "ativado": "2026-10-23", "criticidade": "2 - Alto", "classificacao": "Bug", "tipo_cliente": "Não Informado", "horas": null, "atribuido": "Vinicius Gimenes de Oliveira"}, {"id": 55764, "tipo": "User Story", "estado": "Resolved", "titulo": "Ajustes no Portal do Candidato: Telefone e Listagem de Ambulatório", "po": "Bruno Tukaze Vagen", "cliente": "Itaú", "modulo": "Portal do Candidato", "dev": "Andre Afonso de Lima", "tester": "Bruno Tukaze Vagen", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Plataforma 01 - Itau", "criado": "2026-10-13", "resolvido": "2026-10-30", "ativado": "2026-10-13", "criticidade": "4 - Baixo", "classificacao": "Regra", "tipo_cliente": "Não Informado", "horas": null, "atribuido": "Bruno Tukaze Vagen"}, {"id": 56002, "tipo": "User Story", "estado": "Resolved", "titulo": "Incluir coluna de envio do ASO no relatório de Gestão de Exames", "po": "Bruno Tukaze Vagen", "cliente": "Itaú", "modulo": "Exames", "dev": "Andre Afonso de Lima", "tester": "Bruno Tukaze Vagen", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Plataforma 01 - Itau", "criado": "2026-10-16", "resolvido": "2026-10-30", "ativado": "2026-10-16", "criticidade": "4 - Baixo", "classificacao": "Regra", "tipo_cliente": "Não Informado", "horas": null, "atribuido": "Bruno Tukaze Vagen"}, {"id": 56045, "tipo": "User Story", "estado": "Resolved", "titulo": "Inativar tela antiga de Atribuição de Perfil de Usuário (/admin/perfil) após nova tela de Perfil (#55809)", "po": "Maria Rita Carvalho", "cliente": "Não Informado", "modulo": "Usuários", "dev": "Julius Caesar Santos Silva", "tester": "Eduardo Castro", "data_entrega": "2026-11-06", "departamento": "TI", "iteracao": "Sustentação - 293", "criado": "2026-10-17", "resolvido": "2026-11-04", "ativado": "2026-10-30", "criticidade": "4 - Baixo", "classificacao": "Regra", "tipo_cliente": "Não Informado", "horas": 8.0, "atribuido": "Julius Caesar Santos Silva"}, {"id": 56119, "tipo": "Bug", "estado": "Resolved", "titulo": "CONFIGURAÇÕES - Falha para exportar resultados e Avaliação", "po": "Maria Rita Carvalho", "cliente": "Binatural", "modulo": "Smartforms", "dev": "Julius Caesar Santos Silva", "tester": "Nathalia Gasparoto dos Santos", "data_entrega": "2026-11-06", "departamento": "Suporte", "iteracao": "Sustentação - 293", "criado": "2026-10-19", "resolvido": "2026-10-26", "ativado": "2026-10-20", "criticidade": "4 - Baixo", "classificacao": "Bug", "tipo_cliente": "Enterprise", "horas": 6.0, "atribuido": "Ryan Ruis Silva"}, {"id": 56126, "tipo": "Bug", "estado": "Resolved", "titulo": "Validação de reagendamento de consultas atendidas", "po": "Bruno Tukaze Vagen", "cliente": "Itaú", "modulo": "Agendas", "dev": "Luciano Andrade Filho", "tester": "Eduardo Castro", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Sustentação - 293", "criado": "2026-10-19", "resolvido": "2026-11-04", "ativado": "2026-10-30", "criticidade": null, "classificacao": "Bug", "tipo_cliente": "Não Informado", "horas": null, "atribuido": "Bruno Tukaze Vagen"}, {"id": 56131, "tipo": "Bug", "estado": "Resolved", "titulo": "Campo Data Inicial do atestado dentro da consulta médica (Instância Itaú)", "po": "Bruno Tukaze Vagen", "cliente": "Itaú", "modulo": "Consulta - Nova Versão", "dev": "Nicolas Svaiger Santos", "tester": "Nathalia Gasparoto dos Santos", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Sustentação - 293", "criado": "2026-10-19", "resolvido": "2026-11-03", "ativado": "2026-10-26", "criticidade": null, "classificacao": "Bug", "tipo_cliente": "Não Informado", "horas": 4.0, "atribuido": "Bruno Tukaze Vagen"}, {"id": 56145, "tipo": "User Story", "estado": "To Do Test", "titulo": "ERGONOMIA - Botão \"exportar\" da coluna ação não baixa relatório", "po": "Maria Rita Carvalho", "cliente": "Claro", "modulo": "Ergonomia", "dev": "Leonardo Santos", "tester": "Guilherme Barbosa Dos Santos", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Melhoria - 89", "criado": "2026-10-19", "resolvido": null, "ativado": "2026-10-20", "criticidade": "3 - Médio", "classificacao": "Bug", "tipo_cliente": "Enterprise", "horas": 2.0, "atribuido": "Maria Rita Carvalho"}, {"id": 56251, "tipo": "Bug", "estado": "Resolved", "titulo": "SAÚDE - Filtro de empresas obriga seleção para listar médicos", "po": "Bruno Tukaze Vagen", "cliente": "Claro", "modulo": "Agendas", "dev": "Rafael Wandenkolk", "tester": "Guilherme Barbosa Dos Santos", "data_entrega": "2026-11-06", "departamento": "Suporte", "iteracao": "Sustentação - 293", "criado": "2026-10-21", "resolvido": "2026-10-28", "ativado": "2026-10-23", "criticidade": "3 - Médio", "classificacao": "Bug", "tipo_cliente": "Enterprise", "horas": 3.0, "atribuido": "Gustavo Cordeiro de Almeida"}, {"id": 56308, "tipo": "Bug", "estado": "Resolved", "titulo": "Campo \"Contato\" no envio de atestados pelo Portal do Funcionário", "po": "Maria Rita Carvalho", "cliente": "Pague Menos", "modulo": "Portal do Funcionário", "dev": "Leonardo Santos", "tester": "Guilherme Barbosa Dos Santos", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Sustentação - 293", "criado": "2026-10-23", "resolvido": "2026-11-04", "ativado": "2026-10-23", "criticidade": null, "classificacao": "Bug", "tipo_cliente": "Não Informado", "horas": null, "atribuido": "Maria Rita Carvalho"}, {"id": 56407, "tipo": "Bug", "estado": "Resolved", "titulo": "SAÚDE - CAT - lista suspensa de funcionários não carrega ao pesquisar por CPF ou Matrícula", "po": "Vinicius Gimenes de Oliveira", "cliente": "Hospital Sabará", "modulo": "CAT", "dev": "Nicolas Svaiger Santos", "tester": "Nathalia Gasparoto dos Santos", "data_entrega": "2026-11-06", "departamento": "Suporte", "iteracao": "Sustentação - 293", "criado": "2026-10-26", "resolvido": "2026-10-30", "ativado": "2026-10-29", "criticidade": "2 - Alto", "classificacao": "Bug", "tipo_cliente": "Enterprise", "horas": 3.5, "atribuido": "Gustavo Cordeiro de Almeida"}, {"id": 56472, "tipo": "User Story", "estado": "Resolved", "titulo": "Documentos - Sanitização de Caracteres", "po": "Maria Rita Carvalho", "cliente": "Não Informado", "modulo": "Documentos", "dev": "Leonardo Santos", "tester": "Eduardo Castro", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Sustentação - 293", "criado": "2026-10-28", "resolvido": "2026-11-04", "ativado": "2026-10-29", "criticidade": "4 - Baixo", "classificacao": "Bug", "tipo_cliente": "Não Informado", "horas": null, "atribuido": "Maria Rita Carvalho"}, {"id": 56481, "tipo": "Bug", "estado": "Resolved", "titulo": "Atestado IA - UF e CRM prefixo 52", "po": "Maria Rita Carvalho", "cliente": "Cencosud", "modulo": "Atestado", "dev": "Leonardo Santos", "tester": "Eduardo Castro", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Sustentação - 293", "criado": "2026-10-28", "resolvido": "2026-11-04", "ativado": "2026-11-03", "criticidade": "2 - Alto", "classificacao": "Bug", "tipo_cliente": "Não Informado", "horas": null, "atribuido": "Maria Rita Carvalho"}, {"id": 56614, "tipo": "User Story", "estado": "Resolved", "titulo": "DUT - Ajuste responsável", "po": "Maria Rita Carvalho", "cliente": "Pague Menos", "modulo": "Perícia", "dev": "Luciano Andrade Filho", "tester": "Maria Rita Carvalho", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Melhoria - 88", "criado": "2026-11-03", "resolvido": null, "ativado": "2026-11-04", "criticidade": "4 - Baixo", "classificacao": "Regra", "tipo_cliente": "Não Informado", "horas": null, "atribuido": "Maria Rita Carvalho"}, {"id": 56648, "tipo": "Bug", "estado": "Resolved", "titulo": "POSIÇÃO - Falha ao exportar excel na Listagem de Posições", "po": "Yuri Almeida", "cliente": "Bracell", "modulo": "Work Área", "dev": "João Victor Gomes Carvalho", "tester": "Eduardo Castro", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Sustentação - 293", "criado": "2026-11-04", "resolvido": "2026-11-05", "ativado": "2026-11-04", "criticidade": null, "classificacao": "Bug", "tipo_cliente": "Não Informado", "horas": null, "atribuido": "Yuri Almeida"}, {"id": 56722, "tipo": "Bug", "estado": "Resolved", "titulo": "[POSIÇÃO] Exibição incorreta de nome da posição na tela candidatos - listar", "po": "Vinicius Gimenes de Oliveira", "cliente": "Bracell", "modulo": "Work Área", "dev": "Nicolas Svaiger Santos", "tester": "Eduardo Castro", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Sustentação - 293", "criado": "2026-11-04", "resolvido": "2026-11-04", "ativado": null, "criticidade": null, "classificacao": "Bug", "tipo_cliente": "Não Informado", "horas": 2.0, "atribuido": "Vinicius Gimenes de Oliveira"}, {"id": 56772, "tipo": "User Story", "estado": "Resolved", "titulo": "Executar script em Produção para configurar o parâmetro de notificação do Superior Imediato – Grupo BRASAL", "po": "Bruno Tukaze Vagen", "cliente": "Itaú", "modulo": "Parametrizações", "dev": "Leonardo Santos", "tester": "Bruno Tukaze Vagen", "data_entrega": "2026-11-06", "departamento": "Produto", "iteracao": "Sustentação - 293", "criado": "2026-11-05", "resolvido": "2026-11-05", "ativado": "2026-11-05", "criticidade": "4 - Baixo", "classificacao": "Regra", "tipo_cliente": "Não Informado", "horas": null, "atribuido": "Bruno Tukaze Vagen"}]</script>
+<script>
+(function () {
+  const ds = {entrega: JSON.parse(document.getElementById('dados').textContent)};
+  const draws = {};
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#2f6fb8';
+  window.dash = {
+    colors: [accent],
+    data: (id) => id in ds
+      ? {status: 'ok', data: ds[id], columns: ds[id].length ? Object.keys(ds[id][0]) : [], meta: [], refreshing: false}
+      : {status: 'missing', data: [], columns: [], meta: [], refreshing: false},
+    calc: (id, cfg) => { ds[id] = cfg.fn(...cfg.inputs.map((i) => ds[i])); },
+    draw: (name, fn) => {
+      if (fn) draws[name] = fn;
+      const f = draws[name];
+      if (f) document.querySelectorAll('[data-draw="' + name + '"]').forEach((el) => f(el));
+    },
+    onData: (fn) => fn(),
+    params: () => ({}), setParams: () => {}, resetParams: () => {}, setLink: () => {}, refresh: () => {},
+  };
+})();
+</script>
+<script>
+window.GV = {
+  sort: {k: 'id', dir: 1},
+  busca: '',
+  azure: (id) => 'https://dev.azure.com/MilaneliSistemas/FAPonline/_workitems/edit/' + id,
+  corEstado: (e) => e === 'Resolved' ? 'var(--color-ok)' : e === 'To Do Test' ? 'var(--color-warn)' : e === 'Active' ? 'var(--color-bad)' : 'var(--cds-chart-muted)',
+  pill: (e) => e === 'Resolved' ? 'ok' : e === 'To Do Test' ? 'warn' : e === 'Active' ? 'bad' : '',
+  falha: (el) => {
+    const d = document.createElement('div'); d.className = 'gv-fail';
+    const dot = document.createElement('span'); dot.className = 'dot';
+    d.append(dot, document.createTextNode('Falha ao carregar'));
+    el.replaceChildren(d);
+  },
+  td: (txt, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = txt == null ? '' : String(txt); return c; },
+  linha: (r, cols) => {
+    const tr = document.createElement('tr');
+    for (const k of cols) {
+      if (k === 'id') { const c = document.createElement('td'); const a = document.createElement('a'); a.href = GV.azure(r.id); a.target = '_blank'; a.rel = 'noopener'; a.textContent = String(r.id); c.append(a); tr.append(c); }
+      else if (k === 'estado') { const c = document.createElement('td'); const p = document.createElement('span'); p.className = 'gv-pill ' + GV.pill(r.estado); p.textContent = r.estado; c.append(p); tr.append(c); }
+      else tr.append(GV.td(r[k], (k === 'titulo' ? 'tt' : '') + (['modulo','tester','po','criticidade','departamento','resolvido'].includes(k) ? ' sec' : '')));
+    }
+    return tr;
+  },
+};
+
+dash.calc('resumo', {
+  inputs: ['entrega'],
+  title: 'Resumo da entrega',
+  description: 'Totais do pacote: itens, resolvidos, pendentes, % pronto, bugs, stories, itens abertos por Suporte e por Produto, e dias médios da criação à resolução.',
+  fn: (entrega) => {
+    const res = entrega.filter((r) => r.estado === 'Resolved');
+    const dias = res.filter((r) => r.resolvido).map((r) => (new Date(r.resolvido) - new Date(r.criado)) / 864e5);
+    return [{
+      entrega: entrega.length ? entrega[0].data_entrega.split('-').reverse().join('/') : null,
+      total: entrega.length,
+      resolvidos: res.length,
+      pendentes: entrega.length - res.length,
+      pct: entrega.length ? Math.round(100 * res.length / entrega.length) : 0,
+      bugs: entrega.filter((r) => r.tipo === 'Bug').length,
+      stories: entrega.filter((r) => r.tipo === 'User Story').length,
+      bugs_res: res.filter((r) => r.tipo === 'Bug').length,
+      bugs_pend: entrega.filter((r) => r.tipo === 'Bug' && r.estado !== 'Resolved').length,
+      stories_res: res.filter((r) => r.tipo === 'User Story').length,
+      stories_pend: entrega.filter((r) => r.tipo === 'User Story' && r.estado !== 'Resolved').length,
+      bugs_suporte: entrega.filter((r) => r.tipo === 'Bug' && r.departamento === 'Suporte').length,
+      bugs_produto: entrega.filter((r) => r.tipo === 'Bug' && r.departamento === 'Produto').length,
+      stories_suporte: entrega.filter((r) => r.tipo === 'User Story' && r.departamento === 'Suporte').length,
+      stories_produto: entrega.filter((r) => r.tipo === 'User Story' && r.departamento === 'Produto').length,
+      suporte: entrega.filter((r) => r.departamento === 'Suporte').length,
+      produto: entrega.filter((r) => r.departamento === 'Produto').length,
+      lead: dias.length ? Math.round(10 * dias.reduce((a, b) => a + b, 0) / dias.length) / 10 : null,
+    }];
+  },
+});
+
+dash.calc('por_estado', {
+  inputs: ['entrega'], title: 'Itens por estado', description: 'Contagem de itens em cada estado.',
+  fn: (entrega) => {
+    const m = new Map();
+    for (const r of entrega) m.set(r.estado, (m.get(r.estado) || 0) + 1);
+    return [...m].map(([estado, n]) => ({estado, n})).sort((a, b) => (a.estado === 'Resolved' ? -1 : b.estado === 'Resolved' ? 1 : b.n - a.n));
+  },
+});
+
+dash.calc('por_departamento', {
+  inputs: ['entrega'], title: 'Itens por departamento', description: 'Itens, resolvidos e pendentes por departamento de abertura.',
+  fn: (entrega) => {
+    const m = new Map();
+    for (const r of entrega) { const k = r.departamento || 'Não informado'; const o = m.get(k) || {grupo: k, n: 0, resolvidos: 0, pendentes: 0}; o.n++; if (r.estado === 'Resolved') o.resolvidos++; else o.pendentes++; m.set(k, o); }
+    return [...m.values()].sort((a, b) => b.n - a.n || a.grupo.localeCompare(b.grupo));
+  },
+});
+
+dash.calc('por_atribuido', {
+  inputs: ['entrega'], title: 'Itens por Assigned To', description: 'Itens, resolvidos e pendentes por pessoa em Assigned To.',
+  fn: (entrega) => {
+    const m = new Map();
+    for (const r of entrega) { const k = r.atribuido || 'Sem atribuição'; const o = m.get(k) || {grupo: k, n: 0, resolvidos: 0, pendentes: 0}; o.n++; if (r.estado === 'Resolved') o.resolvidos++; else o.pendentes++; m.set(k, o); }
+    return [...m.values()].sort((a, b) => b.n - a.n || a.grupo.localeCompare(b.grupo));
+  },
+});
+
+dash.calc('por_cliente', {
+  inputs: ['entrega'], title: 'Itens por cliente', description: 'Itens, resolvidos e pendentes por cliente.',
+  fn: (entrega) => {
+    const m = new Map();
+    for (const r of entrega) { const k = r.cliente || 'Não informado'; const o = m.get(k) || {grupo: k, n: 0, resolvidos: 0, pendentes: 0}; o.n++; if (r.estado === 'Resolved') o.resolvidos++; else o.pendentes++; m.set(k, o); }
+    return [...m.values()].sort((a, b) => b.n - a.n || a.grupo.localeCompare(b.grupo));
+  },
+});
+
+dash.calc('por_dev', {
+  inputs: ['entrega'], title: 'Itens por dev', description: 'Itens, resolvidos e pendentes por dev responsável.',
+  fn: (entrega) => {
+    const m = new Map();
+    for (const r of entrega) { const k = r.dev || 'Não informado'; const o = m.get(k) || {grupo: k, n: 0, resolvidos: 0, pendentes: 0}; o.n++; if (r.estado === 'Resolved') o.resolvidos++; else o.pendentes++; m.set(k, o); }
+    return [...m.values()].sort((a, b) => b.n - a.n || a.grupo.localeCompare(b.grupo));
+  },
+});
+
+dash.calc('por_tester', {
+  inputs: ['entrega'], title: 'Itens por tester', description: 'Itens, resolvidos e pendentes por tester.',
+  fn: (entrega) => {
+    const m = new Map();
+    for (const r of entrega) { const k = r.tester || 'Sem tester'; const o = m.get(k) || {grupo: k, n: 0, resolvidos: 0, pendentes: 0}; o.n++; if (r.estado === 'Resolved') o.resolvidos++; else o.pendentes++; m.set(k, o); }
+    return [...m.values()].sort((a, b) => b.n - a.n || a.grupo.localeCompare(b.grupo));
+  },
+});
+
+dash.calc('por_modulo', {
+  inputs: ['entrega'], title: 'Itens por módulo', description: 'Itens, resolvidos e pendentes por módulo do sistema.',
+  fn: (entrega) => {
+    const m = new Map();
+    for (const r of entrega) { const k = r.modulo || 'Não informado'; const o = m.get(k) || {grupo: k, n: 0, resolvidos: 0, pendentes: 0}; o.n++; if (r.estado === 'Resolved') o.resolvidos++; else o.pendentes++; m.set(k, o); }
+    return [...m.values()].sort((a, b) => b.n - a.n || a.grupo.localeCompare(b.grupo));
+  },
+});
+
+dash.calc('por_po', {
+  inputs: ['entrega'], title: 'Itens por PO', description: 'Itens, resolvidos e pendentes por PO responsável.',
+  fn: (entrega) => {
+    const m = new Map();
+    for (const r of entrega) { const k = r.po || 'Sem PO'; const o = m.get(k) || {grupo: k, n: 0, resolvidos: 0, pendentes: 0}; o.n++; if (r.estado === 'Resolved') o.resolvidos++; else o.pendentes++; m.set(k, o); }
+    return [...m.values()].sort((a, b) => b.n - a.n || a.grupo.localeCompare(b.grupo));
+  },
+});
+
+dash.calc('por_criticidade', {
+  inputs: ['entrega'], title: 'Itens por criticidade', description: 'Itens, resolvidos e pendentes por nível de criticidade.',
+  fn: (entrega) => {
+    const m = new Map();
+    for (const r of entrega) { const k = r.criticidade || 'Não informada'; const o = m.get(k) || {grupo: k, n: 0, resolvidos: 0, pendentes: 0}; o.n++; if (r.estado === 'Resolved') o.resolvidos++; else o.pendentes++; m.set(k, o); }
+    return [...m.values()].sort((a, b) => a.grupo.localeCompare(b.grupo));
+  },
+});
+</script>
+
+<script>
+dash.draw('sw-res', (el) => { el.style.background = dash.colors[0]; });
+
+dash.draw('resumo', (el) => {
+  const d = dash.data('resumo');
+  const f = el.dataset.field;
+  if (d.status !== 'ok' || !d.data.length) {
+    el.textContent = '—';
+    el.classList.toggle('dash-skeleton', d.status === 'loading');
+    return;
+  }
+  el.classList.remove('dash-skeleton');
+  const v = d.data[0][f];
+  el.textContent = v == null ? '—' : f === 'pct' ? v + '%' : f === 'lead' ? String(v).replace('.', ',') : String(v);
+  if (el.classList.contains('num') && f === 'pendentes') {
+    el.classList.toggle('is-warn', v > 0);
+    el.classList.toggle('is-ok', v === 0);
+  }
+  if (el.classList.contains('num') && f === 'pct') el.classList.toggle('is-ok', v === 100);
+});
+
+dash.draw('status', (el) => {
+  const d = dash.data('por_estado');
+  if (d.status !== 'ok') { if (d.status === 'error') { el.classList.remove('dash-skeleton'); GV.falha(el); } else { el.replaceChildren(); el.classList.add('dash-skeleton'); } return; }
+  el.classList.remove('dash-skeleton');
+  const total = d.data.reduce((a, r) => a + r.n, 0) || 1;
+  const bar = document.createElement('div'); bar.className = 'gv-status';
+  const leg = document.createElement('div'); leg.className = 'gv-legend';
+  for (const r of d.data) {
+    const s = document.createElement('span'); s.className = 'seg';
+    s.style.flex = r.n + ' 1 0'; s.style.background = GV.corEstado(r.estado);
+    const pct = Math.round(100 * r.n / total);
+    s.textContent = r.n / total > 0.2 ? r.n + ' (' + pct + '%)' : String(r.n);
+    s.setAttribute('aria-label', r.estado + ': ' + r.n);
+    bar.append(s);
+    const l = document.createElement('span');
+    const sw = document.createElement('span'); sw.className = 'gv-sw'; sw.style.background = GV.corEstado(r.estado);
+    const nb = document.createElement('b'); nb.textContent = String(r.n);
+    l.append(sw, document.createTextNode(r.estado + ': '), nb, document.createTextNode(' (' + pct + '%)'));
+    leg.append(l);
+  }
+  el.replaceChildren(bar, leg);
+});
+
+dash.draw('barras', (el) => {
+  const id = el.dataset.source;
+  const d = dash.data(id);
+  if (d.status !== 'ok') { if (d.status === 'error') { el.classList.remove('dash-skeleton'); GV.falha(el); } else { el.replaceChildren(); el.classList.add('dash-skeleton'); } return; }
+  el.classList.remove('dash-skeleton');
+  const rows = d.data;
+  const max = Math.max(1, ...rows.map((r) => r.n));
+  const tip = document.createElement('div'); tip.className = 'gv-tip'; tip.hidden = true;
+  const linha = (cor, nome, v) => {
+    const p = document.createElement('div');
+    const sw = document.createElement('span'); sw.className = 'gv-sw'; sw.style.background = cor;
+    p.append(sw, document.createTextNode(nome + ': ' + v));
+    return p;
+  };
+  const itens = rows.map((r) => {
+    const row = document.createElement('div'); row.className = 'gv-bar';
+    const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = r.grupo;
+    const tr = document.createElement('span'); tr.className = 'tr';
+    if (r.resolvidos) { const a = document.createElement('span'); a.style.width = (100 * r.resolvidos / max) + '%'; a.style.background = dash.colors[0]; tr.append(a); }
+    if (r.pendentes) { const b = document.createElement('span'); b.style.width = (100 * r.pendentes / max) + '%'; b.style.background = 'var(--color-warn)'; tr.append(b); }
+    const v = document.createElement('span'); v.className = 'v'; v.textContent = String(r.n);
+    row.append(nm, tr, v);
+    row.addEventListener('pointermove', (e) => {
+      const t = document.createElement('div'); t.className = 't'; t.textContent = r.grupo;
+      tip.replaceChildren(t, linha(dash.colors[0], 'Resolvidos', r.resolvidos), linha('var(--color-warn)', 'Pendentes', r.pendentes));
+      tip.hidden = false;
+      const box = el.getBoundingClientRect();
+      let x = e.clientX - box.left + 12, y = e.clientY - box.top + 12;
+      x = Math.min(x, box.width - tip.offsetWidth);
+      tip.style.left = Math.max(0, x) + 'px'; tip.style.top = y + 'px';
+    });
+    row.addEventListener('pointerleave', () => { tip.hidden = true; });
+    return row;
+  });
+  el.replaceChildren(...itens, tip);
+});
+
+dash.draw('pend', (el) => {
+  const d = dash.data('entrega');
+  if (d.status !== 'ok') { el.replaceChildren(); return; }
+  const rows = d.data.filter((r) => r.estado !== 'Resolved').sort((a, b) => a.id - b.id);
+  el.replaceChildren(...rows.map((r) => GV.linha(r, ['id', 'tipo', 'estado', 'titulo', 'atribuido', 'cliente', 'dev', 'tester', 'po'])));
+});
+
+GV.cols = ['id', 'tipo', 'estado', 'titulo', 'cliente', 'modulo', 'dev', 'tester', 'criticidade', 'departamento', 'resolvido'];
+GV.visiveis = (data) => {
+  const q = GV.busca.trim().toLowerCase();
+  const {k, dir} = GV.sort;
+  return data
+    .filter((r) => !q || Object.values(r).some((v) => v != null && String(v).toLowerCase().includes(q)))
+    .slice()
+    .sort((a, b) => {
+      const x = a[k], y = b[k];
+      if (x == null && y == null) return 0;
+      if (x == null) return 1;
+      if (y == null) return -1;
+      return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'pt-BR')) * dir;
+    });
+};
+
+dash.draw('tabela', (el) => {
+  const d = dash.data('entrega');
+  if (d.status !== 'ok') { el.replaceChildren(); return; }
+  el.replaceChildren(...GV.visiveis(d.data).map((r) => GV.linha(r, GV.cols)));
+});
+
+for (const btn of document.querySelectorAll('#gv-copiar')) {
+  const mostra = (cls) => { for (const s of btn.querySelectorAll('span')) s.hidden = !s.classList.contains(cls); };
+  let timer;
+  btn.addEventListener('click', () => {
+    const d = dash.data('entrega');
+    if (d.status !== 'ok') return;
+    const limpa = (v) => (v == null ? '' : String(v).replace(/[\t\r\n]+/g, ' '));
+    const head = [...document.querySelectorAll('#itens th')].map((th) => th.textContent.trim());
+    const linhas = GV.visiveis(d.data).map((r) => GV.cols.map((c) => limpa(r[c])).join('\t'));
+    const tsv = [head.join('\t'), ...linhas].join('\n');
+    const area = document.querySelectorAll('#gv-copia-area');
+    const fallback = () => {
+      for (const a of area) { a.value = tsv; a.hidden = false; a.focus(); a.select(); }
+      mostra('c-fail');
+    };
+    clearTimeout(timer);
+    try {
+      navigator.clipboard.writeText(tsv).then(() => {
+        for (const a of area) a.hidden = true;
+        mostra('c-ok');
+        timer = setTimeout(() => mostra('c-idle'), 2000);
+      }, fallback);
+    } catch (e) { fallback(); }
+  });
+}
+
+const gvSortAria = () => {
+  for (const b of document.querySelectorAll('.gv-sort')) {
+    const th = b.closest('th');
+    if (th) th.setAttribute('aria-sort', b.dataset.k === GV.sort.k ? (GV.sort.dir === 1 ? 'ascending' : 'descending') : 'none');
+  }
+};
+for (const b of document.querySelectorAll('.gv-sort')) {
+  b.addEventListener('click', () => {
+    GV.sort = {k: b.dataset.k, dir: GV.sort.k === b.dataset.k ? -GV.sort.dir : 1};
+    gvSortAria();
+    dash.draw('tabela');
+  });
+}
+gvSortAria();
+for (const i of document.querySelectorAll('#gv-busca')) {
+  i.addEventListener('input', () => { GV.busca = i.value; dash.draw('tabela'); });
+}
+</script>
+
+<p class="rodape">Dados copiados da consulta do Azure DevOps (FAPonline) em 05/11/2026 às 15h21. Para atualizar, substitua o conteúdo do bloco &lt;script id="dados"&gt; deste arquivo.</p>
+</main>
+</body>
+</html>
