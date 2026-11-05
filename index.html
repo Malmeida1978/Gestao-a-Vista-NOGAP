@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gestão à Vista – Entrega 06/11</title>
+<title>Gestão à Vista · NOGAP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
@@ -99,7 +99,7 @@ body{background:var(--color-bg);color:var(--color-fg);font-family:var(--font-ant
 
 <div class="gv">
   <header class="gv-head" id="topo">
-    <h1>Gestão à vista · entrega de <b data-draw="resumo" data-source="resumo" data-field="entrega" data-row="0" class="dash-skeleton">—</b></h1>
+    <h1>Gestão à vista · NOGAP · <b data-draw="resumo" data-source="resumo" data-field="entrega" data-row="0" class="dash-skeleton">—</b></h1>
     <p><b data-draw="resumo" data-source="resumo" data-field="resolvidos" data-row="0" class="dash-skeleton">—</b> de <b data-draw="resumo" data-source="resumo" data-field="total" data-row="0" class="dash-skeleton">—</b> itens do pacote estão resolvidos. Ainda faltam <b data-draw="resumo" data-source="resumo" data-field="pendentes" data-row="0" class="dash-skeleton">—</b>, listados em Pendências abaixo. O pacote tem <b data-draw="resumo" data-source="resumo" data-field="bugs" data-row="0" class="dash-skeleton">—</b> bugs (<b data-draw="resumo" data-source="resumo" data-field="bugs_pend" data-row="0" class="dash-skeleton">—</b> pendentes) e <b data-draw="resumo" data-source="resumo" data-field="stories" data-row="0" class="dash-skeleton">—</b> user stories (<b data-draw="resumo" data-source="resumo" data-field="stories_pend" data-row="0" class="dash-skeleton">—</b> pendentes).</p>
   </header>
 
@@ -167,6 +167,8 @@ body{background:var(--color-bg);color:var(--color-fg);font-family:var(--font-ant
           <th data-field="tipo"><button class="gv-sort" data-k="tipo">Tipo</button></th>
           <th data-field="estado"><button class="gv-sort" data-k="estado">Estado</button></th>
           <th data-field="titulo"><button class="gv-sort" data-k="titulo">Título</button></th>
+          <th data-field="atribuido"><button class="gv-sort" data-k="atribuido">Assigned To</button></th>
+          <th data-field="po" class="sec"><button class="gv-sort" data-k="po">PO Responsável</button></th>
           <th data-field="cliente"><button class="gv-sort" data-k="cliente">Cliente</button></th>
           <th data-field="modulo" class="sec"><button class="gv-sort" data-k="modulo">Módulo</button></th>
           <th data-field="dev"><button class="gv-sort" data-k="dev">Dev</button></th>
@@ -428,7 +430,7 @@ dash.draw('pend', (el) => {
   el.replaceChildren(...rows.map((r) => GV.linha(r, ['id', 'tipo', 'estado', 'titulo', 'atribuido', 'cliente', 'dev', 'tester', 'po'])));
 });
 
-GV.cols = ['id', 'tipo', 'estado', 'titulo', 'cliente', 'modulo', 'dev', 'tester', 'criticidade', 'departamento', 'resolvido'];
+GV.cols = ['id', 'tipo', 'estado', 'titulo', 'atribuido', 'po', 'cliente', 'modulo', 'dev', 'tester', 'criticidade', 'departamento', 'resolvido'];
 GV.visiveis = (data) => {
   const q = GV.busca.trim().toLowerCase();
   const {k, dir} = GV.sort;
